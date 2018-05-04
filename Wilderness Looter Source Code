@@ -1,63 +1,73 @@
+import org.osbot.rs07.script.Script;
 import org.osbot.rs07.api.map.Area;
 import org.osbot.rs07.api.model.GroundItem;
 import org.osbot.rs07.api.model.RS2Object;
 import org.osbot.rs07.event.InteractionEvent;
-import org.osbot.rs07.script.Script;
 import org.osbot.rs07.script.ScriptManifest;
 import java.io.File;
 
 
-@ScriptManifest(version = 1.0, info = "", author = "Dab in a Lab", logo = "", name = "Wilderness Looter" )
+    @ScriptManifest(version = 1.0, info = "", author = "Dab in a Lab", logo = "", name = "Wilderness Looter" )
+
+    public class Main extends Script {
 
 
-public class Main extends Script {
+        public java.lang.String status = "";
 
-    public java.lang.String status = "" ;
+        Area Wilderness = new Area(3122, 3523, 3030, 3560);
 
-    Area Wilderness = new Area(3122, 3523, 3030, 3560);
-
-    RS2Object ditch = getObjects().closest("Wilderness Ditch");
-
-    GroundItem items = getGroundItems().closest(getDirectoryData() + getName() + File.separator + "osrs items.txt");
-
-    InteractionEvent interact = new InteractionEvent(ditch, "Cross");
-
-    InteractionEvent loot = new InteractionEvent(items, "Take");
-
-    boolean wildy = getWalking().walk(Wilderness);
+        boolean wildy = getWalking().walk(Wilderness);
 
 
-    @Override
-    public void onStart() throws InterruptedException {
-        super.onStart();
-        log("Welcome to my Wilderness Looter");
-    }
+        @Override
+        public void onStart() throws InterruptedException {
+            super.onStart();
+            log("Welcome to my Wilderness Looter");
+        }
 
 
-    @Override
-    public int onLoop() throws InterruptedException {
+        @Override
+        public int onLoop() throws InterruptedException {
 
 //If statement about if ditch is visible, interact with it
 
-        if (!getInventory().isFull()) ;{
-        getWalking().webWalk(Wilderness);
-        if (getWalking().webWalk(Wilderness))
-            getObjects().closest("Wilderness Ditch");
-        if (myPlayer().getPosition().equals(Wilderness)) {
-            items.interact("Take");}}
+            if (!getInventory().isFull()) {
+
+                if (!myPlayer().getPosition().equals(Wilderness)) {
+
+                    if (getWalking().webWalk(Wilderness))
+
+                        if (ditch.isVisible()) {
+                            InteractionEvent interact;
+                        }
 
 
-            if (ditch != null) ;
-                ditch.interact("Cross");
+                }
+            } else {
+                final InteractionEvent loot = this.loot;
+            }
 
 
             return 600;
         }
 
 
-    @Override
-    public void onExit() throws InterruptedException {
-        super.onExit();
-        log("Thank you, come again");
+        RS2Object ditch = getObjects().closest("Wilderness Ditch");
+
+        GroundItem items = getGroundItems().closest(getDirectoryData() + getName() + File.separator + "osrs items.txt");
+
+        InteractionEvent interact = new InteractionEvent(ditch, "Cross");
+
+        InteractionEvent loot = new InteractionEvent(items, "Take");
+
+
+
+
+
+
+        @Override
+        public void onExit() throws InterruptedException {
+            super.onExit();
+            log("Thank you, come again");
+        }
     }
-}
