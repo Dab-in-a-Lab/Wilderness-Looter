@@ -1,0 +1,73 @@
+import org.osbot.rs07.api.filter.Filter;
+import org.osbot.rs07.script.Script;
+import org.osbot.rs07.api.map.Area;
+import org.osbot.rs07.api.model.GroundItem;
+import org.osbot.rs07.script.ScriptManifest;
+import org.osbot.rs07.utility.ConditionalSleep;
+
+@ScriptManifest(version = 1.0, info = "", author = "Dab in a Lab", logo = "", name = "Lab Certified: Wilderness Looter" )
+
+    public class Main extends Script {
+
+    @Override
+    public void onStart() throws InterruptedException {
+        super.onStart();
+        log("Welcome to my Wilderness Looter");
+    }
+
+
+    @Override
+    public int onLoop() throws InterruptedException {
+        Area Wilderness = new Area(3122, 3523, 3070, 3560);
+        Area Bank = new Area(3088, 3501, 3101, 3485);
+        int LastCount = getInventory().getEmptySlotCount();
+
+
+        if (!getInventory().isFull()) {
+            if (!myPlayer().getPosition().equals(Wilderness)) {
+                if (getWalking().webWalk(Wilderness)) ;
+
+                new ConditionalSleep(3000, 1000) {
+                    @Override
+                    public boolean condition() throws InterruptedException {
+                        return myPlayer().getPosition().equals(Wilderness);
+                    }
+                }.sleep();
+
+                GroundItem items = getGroundItems().closest(new Filter<GroundItem>() {
+                    public boolean match(GroundItem Items) {
+                        return Items != null && Items.exists() && getMap().canReach(Items);
+                        {
+
+                            if (Items != null) {
+                                if (Items.interact("Take"));
+
+                                    new ConditionalSleep(3000, 1000) {
+                                        @Override
+                                        public boolean condition() throws InterruptedException {
+                                            return getInventory().getEmptySlotCount() < LastCount;
+                                        }
+                                    }.sleep();
+                                }
+
+                            }
+                            if (getInventory().isFull())
+                                if (!myPlayer().getPosition().equals(bank))
+                                    if (getWalking().webWalk(Bank)) ;
+                        }
+                    });
+                }
+            }
+            return 600;
+        }
+
+
+
+
+
+        @Override
+        public void onExit() throws InterruptedException {
+            super.onExit();
+            log("Thank you, come again");
+        }
+    }
